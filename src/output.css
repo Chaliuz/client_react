@@ -554,6 +554,10 @@ video {
   --tw-contain-style:  ;
 }
 
+.m-3 {
+  margin: 0.75rem;
+}
+
 .m-\[10px\] {
   margin: 10px;
 }
@@ -562,16 +566,8 @@ video {
   margin: 15px;
 }
 
-.m-\[2rem\] {
-  margin: 2rem;
-}
-
 .m-\[3rem\] {
   margin: 3rem;
-}
-
-.m-3 {
-  margin: 0.75rem;
 }
 
 .mx-\[15px\] {
@@ -635,15 +631,6 @@ video {
 .bg-\[\#acaa03\] {
   --tw-bg-opacity: 1;
   background-color: rgb(172 170 3 / var(--tw-bg-opacity));
-}
-
-.bg-\[\#fc1c03\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(252 28 3 / var(--tw-bg-opacity));
-}
-
-.p-5 {
-  padding: 1.25rem;
 }
 
 .p-2 {
