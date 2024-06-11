@@ -11,7 +11,7 @@ const App = () => {
   // websocket stuff
   // -----------------------------------------------------------------------------------------------------
   const WS_URL = "ws://localhost:8080"
-  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+  const { sendJsonMessage, lastJsonMessage, readyState, getWebSocket } = useWebSocket(
     WS_URL,
     {
       share: false,
@@ -37,6 +37,19 @@ const App = () => {
     }
 
   }, [lastJsonMessage])
+
+  useEffect(() => {
+    return () => {
+      /*
+       * Close socket connection when the component is dismounted
+      */
+      const socket = getWebSocket();
+      if (socket) {
+        socket.close();
+      }
+    }
+
+  }, [])
 
   // -----------------------------------------------------------------------------------------------------
 
@@ -94,56 +107,50 @@ const App = () => {
     return (converted_date.toLocaleString())
   }
 
-
-
   return (
-    <div className="flex flex-col w-screen h-min-[80dvi]">
-      <div className="flex flex-col flex-1 justify-center items-center self-center w-[80dvi] m-[3rem]">
+    <div className="flex flex-col w-screen md:h-min-[80dvi] h-screen">
+      <div className="flex flex-col justify-center items-center self-center ">
         <input
           type='text'
           placeholder='Escribe una Tarea'
           name='texto'
           value={input}
           onChange={onChangeInput}
-          className="p-2 rounded-md text-xl m-3"
+          className="p-2 rounded-md md:text-xl text-md my-3"
         />
 
         <button
           onClick={() => addNote()}>
-          Add
+          Añadir nueva tarea
         </button>
 
         {todos?.map(product => (
-          <div key={product.id} className="flex flex-row justify-between items-center m-[10px] w-[50%]">
-            {/* <span className="text-md m-[15px] flex-1">{product.id}</span> */}
-            <span className="text-md m-[15px] flex-1">{(convertDate(product.id))}</span>
-            <p className="flex-5 text-xl">{product.content}</p>
+          <div key={product.id} className="flex flex-row justify-between items-center md:w-[90%] w-[95%] my-5 max-w-[95%] ">
+            <span className="flex-[0.1] text-md mx-[2px] p-3">{(convertDate(product.id))}</span>
+            <p className="flex-[0.6] md:text-xl text-md text-center md:min-w-[300px] md:max-w-[600px]">{product.content}</p>
 
-            <button className="text-xl mx-[15px] flex-2" onClick={() => deleteTodo(product.id)}>
-              Delete
-            </button>
-            <button
-              className="text-xl mx-[5px] flex-2"
-              onClick={() => updateMessageTodo({ id: product.id, message: input })}>
-              Update
-            </button>
+            <div className="flex flex-[0.3] flex-col justify-between items-center max-w-[150px] ">
+              <button className="md:text-xl text-md my-1 w-[90px] md:w-[150px]" onClick={() => deleteTodo(product.id)}>
+                Borrar
+              </button>
+              <button
+                className="md:text-xl text-md my-1 w-[90px] md:w-[150px] text-center px-0"
+                onClick={() => updateMessageTodo({ id: product.id, message: input })}>
+                Actualizar
+              </button>
+            </div>
             <Checkbox
               checked={product.status == "completed"}
               onChange={(isChecked) => {
                 updateStatusTodo({ id: product.id, status: isChecked })
               }}
               size={5}
-              className="m-3"
+              className="m-2 flex-[0.05] "
             />
           </div>
         ))
         }
         < br />
-        {/* <br /> */}
-
-        {/* <pre> */}
-        {/*   {JSON.stringify(todos, null, 2)} */}
-        {/* </pre> */}
       </div>
     </div>
   )
