@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import useWebSocket, { ReadyState } from "react-use-websocket"
+import Checkbox from 'react-simple-checkbox';
 
 const initialTodos = [
   // { id: 1, description: 'Desc' },
@@ -25,7 +26,6 @@ const App = () => {
   )
   // Run when the connection state (readyState) changes
   useEffect(() => {
-    // console.log("Connection state changed")
     if (readyState === ReadyState.OPEN) {
       sendJsonMessage({
         event: "subscribe",
@@ -53,7 +53,6 @@ const App = () => {
 
   // -----------------------------------------------------------------------------------------------------
 
-  // console.log(`Got a new message: ${JSON.stringify(lastJsonMessage, null, 2)}`)
 
   const onChangeInput = e => {
     setInput(e.target.value);
@@ -62,7 +61,6 @@ const App = () => {
   const deleteTodo = (productId) => {
     // const changedTodos = todos.filter(product => product.id !== productId);
     // setTodos(changedTodos);
-    // console.log(productId)
     sendJsonMessage({
       event: "message",
       data: {
@@ -78,18 +76,30 @@ const App = () => {
       data: {
         id: Date.now(),
         message: input,
+        status: "not_completed",
         operation: "create",
       },
     })
   }
 
-  const updateNote = ({ id, message }) => {
+  const updateMessageTodo = ({ id, message, status }) => {
     sendJsonMessage({
       event: "message",
       data: {
         id: id,
         message: message,
-        operation: "update",
+        operation: "update_message",
+      },
+    })
+  }
+
+  const updateStatusTodo = ({ id, status }) => {
+    sendJsonMessage({
+      event: "message",
+      data: {
+        id: id,
+        status: status ? "completed" : "not_completed",
+        operation: "update_status",
       },
     })
   }
@@ -124,9 +134,17 @@ const App = () => {
             </button>
             <button
               className="text-xl mx-[5px] flex-2"
-              onClick={() => updateNote({ id: product.id, message: input })}>
+              onClick={() => updateMessageTodo({ id: product.id, message: input })}>
               Update
             </button>
+            <Checkbox
+              checked={product.status == "completed"}
+              onChange={(isChecked) => {
+                updateStatusTodo({ id: product.id, status: isChecked })
+              }}
+              size={5}
+              className="m-3"
+            />
           </div>
         ))
         }
