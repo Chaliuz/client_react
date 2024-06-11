@@ -1,5 +1,5 @@
 ### Instructions:
-- Run this commands:
+- Run these commands:
 
 ``` d
 npm install
